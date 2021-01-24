@@ -1,0 +1,4 @@
+db.sqlite3
+mail/__pycache__/
+mail/migrations/
+project3/__pycache__/

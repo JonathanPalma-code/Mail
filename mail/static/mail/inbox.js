@@ -29,6 +29,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-content').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -39,7 +40,7 @@ function load_mailbox(mailbox) {
       // Print emails
       console.log(emails);
       // ... do something else with emails ...
-      emails.forEach(email => display_emails(mailbox, email));
+      emails.forEach(email => display_mailbox(mailbox, email));
     });
 }
 
@@ -59,9 +60,10 @@ const send_email = () => {
   return false;
 }
 
-const display_emails = (mailbox, email) => {
-  const emailCard = document.createElement('section');
+const display_mailbox = (mailbox, email) => {
+  const emailCard = document.createElement('a');
   emailCard.id = 'email-card';
+  emailCard.addEventListener('click', () => load_email(email))
   document.getElementById('emails-view').appendChild(emailCard);
 
   const emailRecipients = document.createElement('div');
@@ -82,4 +84,50 @@ const display_emails = (mailbox, email) => {
 
   [emailRecipients, emailSubject, emailDate]
     .forEach(element => emailCard.appendChild(element));
+}
+
+const load_email = (email) => {
+
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-content').style.display = 'block';
+
+  fetch(`/emails/${email.id}`)
+    .then(response => response.json())
+    .then(email => {
+      // Print email
+      console.log(email);
+      // ... do something else with email ...
+
+      display_email(email)
+    });
+}
+
+const display_email = (email) => {
+  const emailContent = document.getElementById('sender')
+  if (emailContent === null)  {
+    const emailSender = document.createElement('div');
+    emailSender.id = 'sender';
+    emailSender.innerHTML = email.sender;
+
+    const emailRecipients = document.createElement('div');
+    emailRecipients.id = 'recipient';
+    emailRecipients.innerHTML = email.recipients;
+
+    const emailSubject = document.createElement('div');
+    emailSubject.id = 'email-subject';
+    emailSubject.innerHTML = email.subject;
+
+    const emailBody = document.createElement('div');
+    emailBody.id = 'email-body';
+    emailBody.innerHTML = email.body;
+
+    const emailDate = document.createElement('div');
+    emailDate.id = 'email-date';
+    emailDate.innerHTML = email.timestamp;
+
+    [emailSender, emailRecipients, emailSubject, emailBody, emailDate]
+      .forEach(element => document.querySelector('#email-content')
+        .appendChild(element));
+  }
 }

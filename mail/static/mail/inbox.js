@@ -32,6 +32,15 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  fetch(`/emails/${mailbox}`)
+    .then(response => response.json())
+    .then(emails => {
+      // Print emails
+      console.log(emails);
+      // ... do something else with emails ...
+      emails.forEach(email => display_emails(mailbox, email));
+    });
 }
 
 const send_email = () => {
@@ -44,11 +53,33 @@ const send_email = () => {
     })
   })
     .then(response => response.json())
-    .then(result => {
-      // Print result
-      console.log(result);
-    });
+    .then(result => console.log(result)); // Print result
   localStorage.clear();
   load_mailbox('sent');
   return false;
-} 
+}
+
+const display_emails = (mailbox, email) => {
+  const emailCard = document.createElement('section');
+  emailCard.id = 'email-card';
+  document.getElementById('emails-view').appendChild(emailCard);
+
+  const emailRecipients = document.createElement('div');
+  emailRecipients.id = 'email-recipients';
+  if (mailbox === 'sent') {
+    emailRecipients.innerHTML = email.recipients; // slice from a number of characters
+  } else {
+    emailRecipients.innerHTML = email.sender;
+  }
+
+  const emailSubject = document.createElement('div');
+  emailSubject.id = 'email-subject';
+  emailSubject.innerHTML = email.subject;
+
+  const emailDate = document.createElement('div');
+  emailDate.id = 'email-date';
+  emailDate.innerHTML = email.timestamp;
+
+  [emailRecipients, emailSubject, emailDate]
+    .forEach(element => emailCard.appendChild(element));
+}

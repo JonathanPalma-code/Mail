@@ -65,7 +65,7 @@ const display_emails = (mailbox, email) => {
   document.getElementById('emails-view').appendChild(emailCard);
 
   const emailRecipients = document.createElement('div');
-  emailRecipients.id = 'email-recipients';
+  emailRecipients.id = 'email-owner';
   if (mailbox === 'sent') {
     emailRecipients.innerHTML = email.recipients; // slice from a number of characters
   } else {

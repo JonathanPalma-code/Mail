@@ -1,0 +1,29 @@
+// Compose Email
+
+textarea {
+  min-height: 400px;
+}
+
+// Mailbox
+
+#emails-view {
+
+  #email-card {
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    grid-template-rows: auto;
+    background-color: lightgray;
+
+    #email-owner {
+      padding-left: 5px;
+    }
+
+    #email-date {
+      text-align: right;
+      padding-right: 5px;
+    }
+  }
+}

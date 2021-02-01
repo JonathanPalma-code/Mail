@@ -45,6 +45,8 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
 
+  let countEmail = 0
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
@@ -59,7 +61,15 @@ function load_mailbox(mailbox) {
       // Print emails
       // console.log(emails);
       // ... do something else with emails ...
-      emails.forEach(email => display_mailbox(mailbox, email));
+      emails.forEach(email => {
+        display_mailbox(mailbox, email);
+        if (email.read) {
+          changeBackground = document.getElementsByClassName('email-card');
+          changeBackground[countEmail].style.backgroundColor = 'lightgray';
+          changeBackground[countEmail].style.fontWeight = 'normal';
+        }
+        countEmail++;
+      })
     });
 }
 
@@ -111,6 +121,8 @@ const display_mailbox = (mailbox, email) => {
 }
 
 const load_email = (email) => {
+  console.log(`Email${email.id} = ` + email.read)
+
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-content').style.display = 'grid';
@@ -124,6 +136,13 @@ const load_email = (email) => {
       // console.log(email);
       display_email(email)
     });
+
+  fetch(`emails/${email.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  });
 }
 
 const display_email = (email) => {

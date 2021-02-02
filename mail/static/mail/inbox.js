@@ -2,26 +2,17 @@ window.addEventListener('popstate', (e) => {
   const data = e.state;
   if (!data) {
     load_mailbox('inbox');
-  } else if (data.email) {
-    load_email(data.email)
-    console.log('Worked!', data.email);
   } else {
-    load_mailbox(data.mailbox)
-    console.log('Mailbox');
+    load_email(data.email)
+    // console.log('Worked!', data.email);
   }
 })
 
 document.addEventListener('DOMContentLoaded', function () {
 
   // Use buttons to toggle between views
-  document.querySelector('#inbox').addEventListener('click', () => {
-    load_mailbox('inbox');
-    history.pushState({ 'mailbox': 'inbox' }, '', 'inbox')
-  });
-  document.querySelector('#sent').addEventListener('click', () => {
-    load_mailbox('sent');
-    history.pushState({ 'mailbox': 'sent' }, '', 'sent')
-  });
+  document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
+  document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
@@ -45,7 +36,7 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
 
-  let countEmail = 0
+  let countEmail = 0;
 
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -59,13 +50,13 @@ function load_mailbox(mailbox) {
     .then(response => response.json())
     .then(emails => {
       // Print emails
-      // console.log(emails);
+      console.log(emails);
       // ... do something else with emails ...
       emails.forEach(email => {
         display_mailbox(mailbox, email);
         if (email.read) {
           changeBackground = document.getElementsByClassName('email-card');
-          changeBackground[countEmail].style.backgroundColor = 'lightgray';
+          changeBackground[countEmail].style.backgroundColor = '#e2e2e2';
           changeBackground[countEmail].style.fontWeight = 'normal';
         }
         countEmail++;
@@ -90,23 +81,22 @@ const send_email = () => {
 }
 
 const display_mailbox = (mailbox, email) => {
-  const emailCard = document.createElement('a');
+
+  const emailCard = document.createElement('div');
   emailCard.className = 'email-card';
-  emailCard.addEventListener('click', () => {
-    load_email(email)
-    history.pushState({ 'mailbox': mailbox, 'email': email }, '', `email${email.id}`)
-    console.log(history.state)
-  });
 
   document.getElementById('emails-view').appendChild(emailCard);
 
+  const emailInfo = document.createElement('a');
+  emailInfo.className = 'email-info';
+  emailInfo.addEventListener('click', () => {
+    load_email(email)
+    history.pushState({ 'mailbox': mailbox, 'email': email }, '', `email=${email.subject}`)
+    // console.log(history.state)
+  });
+
   const emailRecipients = document.createElement('div');
   emailRecipients.className = 'email-owner';
-  if (mailbox === 'sent') {
-    emailRecipients.innerHTML = email.recipients; // slice from a number of characters
-  } else {
-    emailRecipients.innerHTML = email.sender;
-  }
 
   const emailSubject = document.createElement('div');
   emailSubject.className = 'email-subject';
@@ -116,12 +106,47 @@ const display_mailbox = (mailbox, email) => {
   emailDate.className = 'email-date';
   emailDate.innerHTML = email.timestamp;
 
+
   [emailRecipients, emailSubject, emailDate]
-    .forEach(element => emailCard.appendChild(element));
+    .forEach(element => emailInfo.appendChild(element));
+
+  emailCard.appendChild(emailInfo);
+
+  if (mailbox === 'sent') {
+    emailRecipients.innerHTML = email.recipients; // slice from a number of characters
+  } else {
+    const emailArchived = document.createElement('button');
+    emailRecipients.innerHTML = email.sender;
+    emailArchived.className = 'email-archived';
+    emailArchived.addEventListener('click', () => {
+      archived(email)
+      emailCard.style.animationPlayState = 'running';
+      setTimeout(() => load_mailbox('inbox'), 500)
+    });
+    emailCard.style.gridTemplateColumns = '95% 5%'
+    emailCard.appendChild(emailArchived);
+  }
+}
+
+const archived = (email) => {
+  if (!email.archived) {
+    fetch(`emails/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: true
+      })
+    })
+  } else {
+    fetch(`emails/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: false
+      })
+    });
+  }
 }
 
 const load_email = (email) => {
-  console.log(`Email${email.id} = ` + email.read)
 
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';

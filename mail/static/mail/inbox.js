@@ -8,7 +8,7 @@ window.addEventListener('popstate', (e) => {
   }
 })
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+const compose_email = () => {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -35,7 +35,7 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
-function load_mailbox(mailbox) {
+const load_mailbox = (mailbox) => {
 
   let countEmail = 0;
 
@@ -217,7 +217,7 @@ const display_email = (email) => {
 
 const reply = (email) => {
   document.querySelector('#emails-view').style.display = 'none';
-  form = document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#email-content').style.display = 'grid';
 
   document.querySelector('#compose-recipients').value = email.sender;

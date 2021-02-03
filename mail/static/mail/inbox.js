@@ -51,7 +51,7 @@ const load_mailbox = (mailbox) => {
     .then(response => response.json())
     .then(emails => {
       // Print emails
-      console.log(emails);
+      // console.log(emails);
       // ... do something else with emails ...
       emails.forEach(email => {
         display_mailbox(mailbox, email);
@@ -114,22 +114,29 @@ const display_mailbox = (mailbox, email) => {
 
   if (mailbox === 'sent') {
     emailRecipients.innerHTML = email.recipients; // slice from a number of characters
+    emailRecipients.innerHTML = emailRecipients.innerHTML.slice(0, 20) + '...';
+    emailRecipients.title = email.recipients.toString();
+    // emailRecipients.title = 
   } else {
     const emailArchived = document.createElement('button');
-    emailRecipients.innerHTML = email.sender;
     emailArchived.className = 'email-archived';
+    emailRecipients.innerHTML = email.sender;
+    emailArchived.title = 'Archive';
     emailArchived.addEventListener('click', () => {
-      archived(email)
+      archived(email);
       emailCard.style.animationPlayState = 'running';
-      setTimeout(() => load_mailbox('inbox'), 500)
+      setTimeout(() => load_mailbox('inbox'), 500);
     });
-    emailCard.style.gridTemplateColumns = '95% 5%'
+    emailCard.style.gridTemplateColumns = '95% 5%';
+
     emailCard.appendChild(emailArchived);
+
     if (mailbox === 'archive') {
       emailArchived.style.background = "url('./static/mail/logo/undo.png')";
       emailArchived.style.backgroundPosition = "center";
       emailArchived.style.backgroundRepeat = "no-repeat";
       emailArchived.style.backgroundSize = "contain";
+      emailArchived.title = 'Unarchive';
     }
   }
 

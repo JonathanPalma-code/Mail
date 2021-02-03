@@ -1,3 +1,11 @@
+header {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+header section.bg-img {
+  text-align: right;
+}
+
 textarea {
   min-height: 200px;
 }

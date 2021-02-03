@@ -1,3 +1,17 @@
+// Header
+
+header {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  section {
+
+    &.bg-img {
+      text-align: right;
+    }
+  }
+}
+
 // Compose Email
 
 textarea {

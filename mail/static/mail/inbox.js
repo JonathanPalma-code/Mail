@@ -217,7 +217,7 @@ const display_email = (email) => {
 
 const reply = (email) => {
   document.querySelector('#emails-view').style.display = 'none';
-  form = document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#email-content').style.display = 'grid';
 
   document.querySelector('#compose-recipients').value = email.sender;

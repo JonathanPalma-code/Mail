@@ -125,7 +125,14 @@ const display_mailbox = (mailbox, email) => {
     });
     emailCard.style.gridTemplateColumns = '95% 5%'
     emailCard.appendChild(emailArchived);
+    if (mailbox === 'archive') {
+      emailArchived.style.background = "url('./static/mail/logo/undo.png')";
+      emailArchived.style.backgroundPosition = "center";
+      emailArchived.style.backgroundRepeat = "no-repeat";
+      emailArchived.style.backgroundSize = "contain";
+    }
   }
+
 }
 
 const archived = (email) => {

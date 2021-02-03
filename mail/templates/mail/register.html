@@ -2,12 +2,16 @@
 
 {% block body %}
 
-    <h2>Register</h2>
+<header class="img-logo">
+    <img src='https://cdn1.iconfinder.com/data/icons/icomail-icon-set/2204/Letter-512.png' alt="Mail" width="300" />
+    <h1>Welcome to Mail</h1>
+</header>
+<h2>Register</h2>
 
+<main class="register-form">
     {% if message %}
-        <div>{{ message }}</div>
+    <div>{{ message }}</div>
     {% endif %}
-
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -23,5 +27,6 @@
     </form>
 
     Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+</main>
 
 {% endblock %}

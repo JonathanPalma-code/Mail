@@ -2,10 +2,15 @@
 
 {% block body %}
 
-    <h2>Login</h2>
+<header class="img-logo">
+    <img src='https://cdn1.iconfinder.com/data/icons/icomail-icon-set/2204/Letter-512.png' alt="Mail" width="300" />
+    <h1>Welcome to Mail</h1>
+</header>
+<h2>Login</h2>
 
+<main class="login-form">
     {% if message %}
-        <div>{{ message }}</div>
+    <div>{{ message }}</div>
     {% endif %}
 
     <form action="{% url 'login' %}" method="post">
@@ -20,5 +25,6 @@
     </form>
 
     Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+</main>
 
 {% endblock %}

@@ -1,5 +1,13 @@
+.img-logo {
+  display: block;
+  text-align: center;
+}
+
 body {
   padding: 2% 0 2%;
+}
+body .login-form {
+  text-align: center;
 }
 
 header {

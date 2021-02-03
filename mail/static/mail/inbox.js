@@ -27,6 +27,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#email-content').style.display = 'none';
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -75,8 +76,7 @@ const send_email = () => {
   })
     .then(response => response.json())
     .then(result => console.log(result)); // Print result
-  localStorage.clear();
-  load_mailbox('sent');
+  setTimeout(() => load_mailbox('sent'), 500);
   return false;
 }
 
@@ -176,6 +176,7 @@ const display_email = (email) => {
   const emailSubject = document.createElement('div');
   const emailBody = document.createElement('div');
   const emailDate = document.createElement('div');
+  const replyButton = document.createElement('button');
 
   emailSender.id = 'sender';
   emailSender.innerHTML = email.sender;
@@ -188,11 +189,31 @@ const display_email = (email) => {
 
   emailBody.id = 'body';
   emailBody.innerHTML = email.body;
+  emailBody.innerHTML = emailBody.innerHTML.replace('\n', '<br>');
+  emailBody.style.whiteSpace = 'pre';
 
   emailDate.id = 'date';
   emailDate.innerHTML = email.timestamp;
 
-  [emailSender, emailRecipients, emailSubject, emailBody, emailDate]
+  replyButton.id = 'reply-btn';
+  replyButton.innerHTML = 'Reply';
+  replyButton.className = 'btn btn-sm btn-primary ';
+
+  [emailSender, emailRecipients, emailSubject, emailBody, emailDate, replyButton]
     .forEach(element => document.querySelector('#email-content')
       .appendChild(element));
+
+  replyButton.addEventListener('click', () => {
+    reply(email)
+  })
+}
+
+const reply = (email) => {
+  document.querySelector('#emails-view').style.display = 'none';
+  form = document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#email-content').style.display = 'grid';
+
+  document.querySelector('#compose-recipients').value = email.sender;
+  document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+  document.querySelector('#compose-body').value = `\n\n------- On ${email.timestamp}, ${email.sender} wrote:\n${email.body}`;
 }

@@ -228,6 +228,12 @@ const reply = (email) => {
   document.querySelector('#email-content').style.display = 'grid';
 
   document.querySelector('#compose-recipients').value = email.sender;
-  document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+  if (email.subject.indexOf('Re:') > -1) {
+    console.log('RE: is included');
+    document.querySelector('#compose-subject').value = email.subject;
+  } else {
+    console.log('Re: not included');
+    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+  }
   document.querySelector('#compose-body').value = `\n\n------- On ${email.timestamp}, ${email.sender} wrote:\n${email.body}`;
 }
